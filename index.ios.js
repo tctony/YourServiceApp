@@ -51,3 +51,4 @@ var styles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('YourService', () => YourService);
+
