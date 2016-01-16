@@ -1,0 +1,15 @@
+platform :ios, '8.0'
+use_frameworks!
+
+target 'YourService' do
+
+  pod 'Alamofire', '~> 3.0'
+  pod 'SwiftyJSON', '~> 2.0'
+  pod 'Kingfisher', '~> 1.9'
+
+end
+
+target 'YourServiceTests' do
+
+end
+

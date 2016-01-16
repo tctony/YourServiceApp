@@ -18,40 +18,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerNotification(application)
 
         var jsCodeLocation: NSURL?
-        jsCodeLocation = NSURL(string: "http://192.168.0.104:8081/index.ios.bundle?platform=ios&dev=true");
-        //jsCodeLocation = NSBundle.mainBundle().URLForResource("main", withExtension: "jsbundle");
+        jsCodeLocation = NSURL(string: "http://192.168.0.103:8081/index.ios.bundle?platform=ios&dev=true")
+        jsCodeLocation = NSBundle.mainBundle().URLForResource("main", withExtension: "jsbundle")
 
-        let rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "YourService", initialProperties: nil, launchOptions: launchOptions)
+        let rootView = RCTRootView(bundleURL: jsCodeLocation,
+            moduleName: "YourService", initialProperties: nil,
+            launchOptions: launchOptions)
 
         window = UIWindow.init(frame: UIScreen.mainScreen().bounds)
         let rootViewController = UIViewController()
         rootViewController.view = rootView
         window!.rootViewController = rootViewController
         window!.makeKeyAndVisible()
-        
+
         return true
     }
 
-    func registerNotification(application: UIApplication) {
-        let types: UIUserNotificationType = [ .Badge, .Sound, .Alert ]
-        let settings = UIUserNotificationSettings(forTypes: types, categories: nil)
-        application.registerUserNotificationSettings(settings)
-        application.registerForRemoteNotifications()
-    }
-    
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        let token = deviceToken.description
-            .stringByReplacingOccurrencesOfString("<", withString: "")
-            .stringByReplacingOccurrencesOfString(" ", withString: "")
-            .stringByReplacingOccurrencesOfString(">", withString: "")
-        print("got push token:", token)
-    }
-    
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        print("get token failed:", error)
-    }
-    
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        print("get push with userinfo:", userInfo)
+    func applicationDidEnterBackground(application: UIApplication) {
     }
 }
