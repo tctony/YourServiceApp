@@ -18,12 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerNotification(application)
 
         var jsCodeLocation: NSURL?
-        jsCodeLocation = NSURL(string: "http://192.168.0.103:8081/index.ios.bundle?platform=ios&dev=true")
+        //jsCodeLocation = NSURL(string: "http://192.168.0.104:8081/index.ios.bundle?platform=ios&dev=true")
         jsCodeLocation = NSBundle.mainBundle().URLForResource("main", withExtension: "jsbundle")
 
-        let rootView = RCTRootView(bundleURL: jsCodeLocation,
-            moduleName: "YourService", initialProperties: nil,
-            launchOptions: launchOptions)
+        let rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "YourService", initialProperties: nil, launchOptions: launchOptions)
 
         window = UIWindow.init(frame: UIScreen.mainScreen().bounds)
         let rootViewController = UIViewController()
