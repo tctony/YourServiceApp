@@ -12,10 +12,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var rootViewController: UIViewController?
+
+    static func theOne() -> AppDelegate {
+        return UIApplication.sharedApplication().delegate as! AppDelegate
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-
-        registerNotification(application)
 
         var jsCodeLocation: NSURL?
         //jsCodeLocation = NSURL(string: "http://192.168.0.104:8081/index.ios.bundle?platform=ios&dev=true")
@@ -24,14 +27,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "YourService", initialProperties: nil, launchOptions: launchOptions)
 
         window = UIWindow.init(frame: UIScreen.mainScreen().bounds)
-        let rootViewController = UIViewController()
-        rootViewController.view = rootView
+        rootViewController = UIViewController()
+        rootViewController!.view = rootView
         window!.rootViewController = rootViewController
         window!.makeKeyAndVisible()
 
+        dispatch_after(0, dispatch_get_main_queue()) { () -> Void in
+            self.registerNotification(application)
+            self.handleLuanchWithNotification(launchOptions)
+        }
+        
         return true
-    }
-
-    func applicationDidEnterBackground(application: UIApplication) {
     }
 }

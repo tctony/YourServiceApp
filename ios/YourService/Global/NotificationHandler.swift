@@ -85,10 +85,35 @@ extension UIUserNotificationCategory {
         get {
             let category = UIMutableUserNotificationCategory()
             category.identifier = "uri"
-            category.setActions([ .close, .later, .jump ], forContext: .Default)
-            category.setActions([ .close, .jump ], forContext: .Minimal)
+            category.setActions([ .close, .view ], forContext: .Default)
+            category.setActions([ .close, .view ], forContext: .Minimal)
 
             return category
+        }
+    }
+}
+
+class NotificationInfo {
+
+    var alert : String?
+    var badge : Int?
+    var sound : String?
+    var contentAvaliable : Int?
+    var category : String?
+
+    var uri: String?
+
+    convenience init(_ userInfo: [NSObject : AnyObject]) {
+        self.init()
+
+        if let aps = userInfo["aps"] as? [String : AnyObject] {
+            alert = aps["alert"] as? String
+            badge = aps["badge"] as? Int
+            sound = aps["sound"] as? String
+            contentAvaliable = aps["content-available"] as? Int
+            category = aps["category"] as? String
+
+            uri = userInfo["uri"] as? String
         }
     }
 }
@@ -96,9 +121,52 @@ extension UIUserNotificationCategory {
 class NotificationHandler {
 
     static let sharedInstance = NotificationHandler()
+
+    func onReceive(info: NotificationInfo) {
+        let alertController = UIAlertController(title: nil, message: info.alert, preferredStyle: .Alert)
+
+        let closeAction = UIAlertAction(title: UIUserNotificationAction.close.identifier, style: .Default, handler: nil)
+
+        if info.category != nil {
+            let viewAction = UIAlertAction(title: UIUserNotificationAction.view.identifier, style: .Default, handler: { (UIAlertAction) -> Void in
+                self.onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
+            })
+            alertController.addAction(viewAction)
+            alertController.addAction(closeAction)
+        }
+        else {
+            alertController.addAction(UIAlertAction(title: UIUserNotificationAction.close.identifier, style: .Default, handler: nil))
+        }
+
+        NavigationCenter.presentController(alertController)
+    }
+
+    func onProceed(info: NotificationInfo) {
+        onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
+    }
+
+    func onAction(identifier: String, info: NotificationInfo, completionHandler: (() -> Void)?) {
+
+        switch identifier {
+
+        case UIUserNotificationAction.view.identifier!:
+            let webViewController = PresentedWebViewController()
+            webViewController.pageUrl = info.uri
+            NavigationCenter.presentController(webViewController, wrapInNavigationController: true)
+
+        default:
+            break;
+        }
+
+        if completionHandler != nil {
+            completionHandler!()
+        }
+    }
 }
 
+
 extension AppDelegate {
+
     func registerNotification(application: UIApplication) {
         let types: UIUserNotificationType = [ .Badge, .Sound, .Alert ]
 
@@ -122,28 +190,27 @@ extension AppDelegate {
         print("get token failed: \(error)")
     }
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        print("get push with userinfo \(userInfo)")
+    func handleLuanchWithNotification(launchOptions: [NSObject: AnyObject]?) {
+        if let userInfo = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject : AnyObject] {
+            print("launch on push with userInfo: \(userInfo)")
+
+            NotificationHandler.sharedInstance.onProceed(NotificationInfo.init(userInfo))
+        }
     }
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        print("get push with userinfo: \(userInfo)\n  and handler: \(completionHandler)")
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        print("get push with userInfo: \(userInfo)")
 
-        // TODO alert and jump
-
-        completionHandler(.NoData)
+        NotificationHandler.sharedInstance.onReceive(NotificationInfo.init(userInfo))
     }
 
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forRemoteNotification userInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
-        print("get push from action \(identifier)\n with userinfo: \(userInfo)\n and handler: \(completionHandler)")
+        print("get push from action: \(identifier)\n",
+            "with userInfo: \(userInfo)\n",
+            "and handler: \(completionHandler)")
 
-        if identifier == UIUserNotificationAction.jump.identifier {
-            if let uri = userInfo["uri"] as? String, let url = NSURL(string: uri) {
-                print("open url: ", url)
-                application.openURL(url)
-            }
-        }
-
-        completionHandler()
+        NotificationHandler.sharedInstance.onAction(identifier ?? "", info: NotificationInfo.init(userInfo), completionHandler: completionHandler)
     }
 }
+
+
