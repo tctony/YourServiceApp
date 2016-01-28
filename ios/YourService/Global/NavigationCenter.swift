@@ -16,9 +16,9 @@ class NavigationCenter {
 
     static func presentController(controller: UIViewController, wrapInNavigationController wrapIn: Bool) {
 
-        if let rootViewController = AppDelegate.theOne().rootViewController {
+        if let rootViewController = appDelegate.rootViewController {
 
-            if (rootViewController.presentedViewController != nil) {
+            if rootViewController.presentedViewController != nil {
                 rootViewController.dismissViewControllerAnimated(false, completion: nil)
             }
 

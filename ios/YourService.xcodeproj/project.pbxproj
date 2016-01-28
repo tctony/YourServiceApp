@@ -250,8 +250,8 @@
 			children = (
 				EA5542F61C4A2E34003B0DA1 /* Playground.playground */,
 				EA5542B91C4A1CAB003B0DA1 /* App */,
-				EA592FD71C59D7FD00BF8262 /* WebView */,
 				EA5542BA1C4A1CE5003B0DA1 /* Global */,
+				EA592FD71C59D7FD00BF8262 /* WebView */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -787,6 +787,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"DEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "xyz.tctony.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = YourService;
 				PROVISIONING_PROFILE = "d2ae667b-1a41-442f-bd78-6c962e19dc05";

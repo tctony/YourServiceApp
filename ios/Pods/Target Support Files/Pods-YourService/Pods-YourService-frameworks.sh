@@ -87,9 +87,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-YourService/Alamofire.framework"
   install_framework "Pods-YourService/Kingfisher.framework"
   install_framework "Pods-YourService/SwiftyJSON.framework"
+  install_framework "Pods-YourService/XCGLogger.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-YourService/Alamofire.framework"
   install_framework "Pods-YourService/Kingfisher.framework"
   install_framework "Pods-YourService/SwiftyJSON.framework"
+  install_framework "Pods-YourService/XCGLogger.framework"
 fi

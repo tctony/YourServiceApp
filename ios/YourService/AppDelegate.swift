@@ -8,15 +8,25 @@
 
 import Foundation
 import UIKit
+import XCGLogger
+
+let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+let log: XCGLogger = {
+    let log = XCGLogger.defaultInstance()
+    #if DEBUG
+        log.xcodeColorsEnabled = true
+        log.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLogLevel: .Info)
+    #else
+        log.setup(.Info, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLogLevel: .Info)
+    #endif
+
+    return log
+}()
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var rootViewController: UIViewController?
-
-    static func theOne() -> AppDelegate {
-        return UIApplication.sharedApplication().delegate as! AppDelegate
-    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 

@@ -9,7 +9,7 @@
 import Foundation
 import WebKit
 
-class BaseWebViewController: UIViewController {
+class BaseWebViewController: UIViewController, WKNavigationDelegate {
 
     var webView: WKWebView!
     var pageUrl: String?
@@ -25,6 +25,7 @@ class BaseWebViewController: UIViewController {
 
         let config = WKWebViewConfiguration()
         webView = WKWebView(frame: view.bounds, configuration: config)
+        webView.navigationDelegate = self
         view.addSubview(webView)
 
         loadRequest()
@@ -35,11 +36,15 @@ class BaseWebViewController: UIViewController {
             let request = NSMutableURLRequest(URL: url)
             webView.loadRequest(request)
 
-            print("loading page of url: \(pageUrl)")
+            log.info("loading page of url: \(pageUrl)")
+        } else {
+            log.info("failed to load: \(pageUrl)")
         }
-        else {
-            print("failed to load: \(pageUrl)")
-        }
+    }
+
+    // MARK: - WKNavigationDelegate
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+
     }
 
 }

@@ -3,6 +3,7 @@ use_frameworks!
 
 target 'YourService' do
 
+  pod 'XCGLogger', '~> 3.2'
   pod 'Alamofire', '~> 3.0'
   pod 'SwiftyJSON', '~> 2.0'
   pod 'Kingfisher', '~> 1.9'
