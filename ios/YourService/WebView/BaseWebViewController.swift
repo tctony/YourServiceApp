@@ -26,6 +26,7 @@ class BaseWebViewController: UIViewController, WKNavigationDelegate {
         let config = WKWebViewConfiguration()
         webView = WKWebView(frame: view.bounds, configuration: config)
         webView.navigationDelegate = self
+        webView.allowsBackForwardNavigationGestures = true
         view.addSubview(webView)
 
         loadRequest()
@@ -43,8 +44,13 @@ class BaseWebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - WKNavigationDelegate
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        webView.evaluateJavaScript("document.title") { (result: AnyObject?, error: NSError?) -> Void in
+            if error == nil {
+                if let title = result as? String {
+                    self.navigationItem.title = title ?? ""
+                }
+            }
+        }
     }
-
 }
