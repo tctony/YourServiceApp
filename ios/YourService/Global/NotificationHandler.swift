@@ -125,16 +125,16 @@ class NotificationHandler {
     func onReceive(info: NotificationInfo) {
         let alertController = UIAlertController(title: nil, message: info.alert, preferredStyle: .Alert)
 
-        let closeAction = UIAlertAction(title: UIUserNotificationAction.close.identifier, style: .Default, handler: nil)
+        let closeAction = UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil)
 
         if info.category != nil {
-            let viewAction = UIAlertAction(title: UIUserNotificationAction.view.identifier, style: .Default, handler: { (UIAlertAction) -> Void in
+            let viewAction = UIAlertAction(title: UIUserNotificationAction.view.title, style: .Default, handler: { (UIAlertAction) -> Void in
                 self.onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
             })
             alertController.addAction(viewAction)
             alertController.addAction(closeAction)
         } else {
-            alertController.addAction(UIAlertAction(title: UIUserNotificationAction.close.identifier, style: .Default, handler: nil))
+            alertController.addAction(UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil))
         }
 
         NavigationCenter.presentController(alertController)
