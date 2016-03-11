@@ -123,21 +123,24 @@ class NotificationHandler {
     static let sharedInstance = NotificationHandler()
 
     func onReceive(info: NotificationInfo) {
-        let alertController = UIAlertController(title: nil, message: info.alert, preferredStyle: .Alert)
-
-        let closeAction = UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil)
-
-        if info.category != nil {
-            let viewAction = UIAlertAction(title: UIUserNotificationAction.view.title, style: .Default, handler: { (UIAlertAction) -> Void in
-                self.onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
-            })
-            alertController.addAction(viewAction)
-            alertController.addAction(closeAction)
+        if UIApplication.sharedApplication().applicationState == .Active {
+            let alertController = UIAlertController(title: nil, message: info.alert, preferredStyle: .Alert)
+            let closeAction = UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil)
+            
+            if info.category != nil {
+                let viewAction = UIAlertAction(title: UIUserNotificationAction.view.title, style: .Default, handler: { (UIAlertAction) -> Void in
+                    self.onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
+                })
+                alertController.addAction(viewAction)
+                alertController.addAction(closeAction)
+            } else {
+                alertController.addAction(UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil))
+            }
+            
+            NavigationCenter.presentController(alertController)
         } else {
-            alertController.addAction(UIAlertAction(title: UIUserNotificationAction.close.title, style: .Default, handler: nil))
+            onAction(UIUserNotificationAction.view.identifier!, info: info, completionHandler: nil)
         }
-
-        NavigationCenter.presentController(alertController)
     }
 
     func onProceed(info: NotificationInfo) {
