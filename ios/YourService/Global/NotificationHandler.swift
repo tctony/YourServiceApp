@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SafariServices
 
 extension UIUserNotificationAction {
 
@@ -152,9 +153,16 @@ class NotificationHandler {
         switch identifier {
 
         case UIUserNotificationAction.view.identifier!:
-            let webViewController = PresentedWebViewController()
-            webViewController.pageUrl = info.uri
-            NavigationCenter.presentController(webViewController, wrapInNavigationController: true)
+            if #available(iOS 9.0, *) {
+                if let urlString = info.uri, url = NSURL(string: urlString) {
+                    let safariController = SFSafariViewController(URL: url, entersReaderIfAvailable: true)
+                    NavigationCenter.presentController(safariController)
+                }
+            } else {
+                let webViewController = PresentedWebViewController()
+                webViewController.pageUrl = info.uri
+                NavigationCenter.presentController(webViewController, wrapInNavigationController: true)
+            }
 
         default:
             break

@@ -13,7 +13,7 @@ class PresentedWebViewController: BaseWebViewController {
     convenience init() {
         self.init(nibName: nil, bundle: nil)
 
-        let closeItem = UIBarButtonItem(title: "关闭", style: .Plain, target: self, action: "onClose")
+        let closeItem = UIBarButtonItem(title: "关闭", style: .Plain, target: self, action: #selector(PresentedWebViewController.onClose))
         self.navigationItem.leftBarButtonItem = closeItem
     }
 
